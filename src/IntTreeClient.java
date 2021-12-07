@@ -13,5 +13,10 @@ public class IntTreeClient {
 						new IntTreeNode(40)
 				)
 		);
+		IntTree tree = new IntTree(root);
+		tree.print();
+		System.out.println(tree.contains(81));
+		System.out.println(tree.contains(7));
+		tree.printSideways();
 	}
 }
