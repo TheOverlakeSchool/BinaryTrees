@@ -1,7 +1,11 @@
-public class IntTree {
+public class IntSearchTree {
 	private IntTreeNode overallRoot;
 
-	IntTree(IntTreeNode root) {
+	IntSearchTree() {
+
+	}
+
+	IntSearchTree(IntTreeNode root) {
 		this.overallRoot = root;
 	}
 
@@ -22,7 +26,15 @@ public class IntTree {
 	}
 
 	private boolean contains(IntTreeNode root, int value) {
-		return root != null && (root.data == value || contains(root.left, value) || contains(root.right, value));
+		if (root == null) {
+			return false;
+		} else if (root.data == value) {
+			return true;
+		} else if (root.data < value) {
+			return contains(root.right, value);
+		} else {
+			return contains(root.left, value);
+		}
 	}
 
 	public void printSideways() {
@@ -34,6 +46,20 @@ public class IntTree {
 			printSideways(root.right, indent + "\t");
 			System.out.println(indent + root.data);
 			printSideways(root.left, indent + "\t");
+		}
+	}
+
+	public void add(int value) {
+		add(overallRoot, value);
+	}
+
+	private void add(IntTreeNode root, int value) {
+		if (root == null) {
+			root = new IntTreeNode(value);
+		} else if (root.data > value) {
+			add(root.left, value);
+		} else {
+			add(root.right, value);
 		}
 	}
 }
