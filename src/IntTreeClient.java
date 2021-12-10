@@ -26,5 +26,6 @@ public class IntTreeClient {
 		System.out.println(tree.contains(91));
 		System.out.println(tree.contains(7));
 		tree.printSideways();
+		System.out.println("Min: " + tree.getMin());
 	}
 }

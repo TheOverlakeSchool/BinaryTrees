@@ -1,3 +1,5 @@
+import java.util.NoSuchElementException;
+
 public class IntSearchTree {
 	private IntTreeNode overallRoot;
 
@@ -50,16 +52,48 @@ public class IntSearchTree {
 	}
 
 	public void add(int value) {
-		add(overallRoot, value);
+		overallRoot = add(overallRoot, value);
 	}
 
-	private void add(IntTreeNode root, int value) {
+	private IntTreeNode add(IntTreeNode root, int value) {
 		if (root == null) {
 			root = new IntTreeNode(value);
 		} else if (root.data > value) {
-			add(root.left, value);
+			root.left = add(root.left, value);
 		} else {
-			add(root.right, value);
+			root.right = add(root.right, value);
+		}
+		return root;
+	}
+
+	public int getMin() {
+		if (overallRoot == null) {
+			throw new NoSuchElementException();
+		}
+		return getMin(overallRoot);
+	}
+
+	private int getMin(IntTreeNode root) {
+		if (root.left == null) {
+			return root.data;
+		} else {
+			return getMin(root.left);
+		}
+	}
+
+	private static class IntTreeNode {
+		public int data;
+		public IntTreeNode left;
+		public IntTreeNode right;
+
+		IntTreeNode(int data) {
+			this(data, null, null);
+		}
+
+		IntTreeNode(int data, IntTreeNode left, IntTreeNode right) {
+			this.data = data;
+			this.left = left;
+			this.right = right;
 		}
 	}
 }
