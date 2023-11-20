@@ -1,88 +1,70 @@
 import java.util.NoSuchElementException;
+import java.util.StringJoiner;
 
 public class BinarySearchTree {
 
-    private IntTreeNode overallRoot;
+    private TreeNode overallRoot;
 
-    public BinarySearchTree() {
-        IntTreeNode left = new IntTreeNode(29, null, new IntTreeNode(42, new IntTreeNode(36), null));
-        IntTreeNode right = new IntTreeNode(87, new IntTreeNode(60, null, new IntTreeNode(73)), new IntTreeNode(91));
-        overallRoot = new IntTreeNode(55, left, right);
+    public String toString() {
+        StringJoiner sj = new StringJoiner(", ", "[", "]");
+        print(overallRoot, sj);
+        return sj.toString();
     }
 
-    public void print() {
-        print(overallRoot);
-    }
-
-    private void print(IntTreeNode root) {
+    private void print(TreeNode root, StringJoiner sj) {
         if (root != null) {
-            print(root.left);
-            System.out.print(root.data + " ");
-            print(root.right);
+            print(root.left, sj);
+            sj.add(root.student.toString());
+            print(root.right, sj);
         }
     }
 
-    public boolean contains(int i) {
-        return contains(overallRoot, i);
+    public boolean contains(Student student) {
+        return contains(overallRoot, student);
     }
 
-    private boolean contains(IntTreeNode root, int i) {
-        return root != null && (root.data == i || (root.data > i ? contains(root.left, i) : contains(root.right, i)));
+    private boolean contains(TreeNode root, Student student) {
+        return root != null && (root.student.equals(student) || (root.student.compareTo(student) > 0 ? contains(root.left, student) : contains(root.right, student)));
     }
 
-    public void printSideways() {
-        printSideways(overallRoot, 0);
+    public void add(Student student) {
+        overallRoot = add(overallRoot, student);
     }
 
-    private void printSideways(IntTreeNode root, int indent) {
-        if (root != null) {
-            printSideways(root.right, indent + 1);
-            for (int i = 0; i < indent * 4; i++) {
-                System.out.print(" ");
-            }
-            System.out.println(root.data);
-            printSideways(root.left, indent + 1);
-        }
-    }
-
-    public void add(int value) {
-        overallRoot = add(overallRoot, value);
-    }
-
-    private IntTreeNode add(IntTreeNode root, int value) {
+    private TreeNode add(TreeNode root, Student student) {
         if (root == null) {
-            root = new IntTreeNode(value);
+            root = new TreeNode(student);
         } else {
-            if (root.data > value) {
-                root.left = add(root.left, value);
-            } else if(root.data < value) {
-                root.right = add(root.right, value);
+            if (root.student.compareTo(student) > 0) {
+                root.left = add(root.left, student);
+            } else if(root.student.compareTo(student) < 0) {
+                root.right = add(root.right, student);
             }
         }
         return root;
     }
 
-    public int getMin() {
+    public Student getMin() {
         if (overallRoot == null) {
             throw new NoSuchElementException();
         }
         return getMin(overallRoot);
     }
 
-    private int getMin(IntTreeNode root) {
-        return root.left == null ? root.data : getMin(root.left);
+    private Student getMin(TreeNode root) {
+        return root.left == null ? root.student : getMin(root.left);
     }
 
-    public void remove(int value) {
-        overallRoot = remove(overallRoot, value);
+    public void remove(Student student) {
+        overallRoot = remove(overallRoot, student);
     }
 
-    private IntTreeNode remove(IntTreeNode root, int value) {
+    private TreeNode remove(TreeNode root, Student student) {
         if (root != null) {
-            if (root.data < value) {
-                root.right = remove(root.right, value);
-            } else if (root.data > value) {
-                root.left = remove(root.left, value);
+            if (root.student.compareTo(student) < 0) {
+                root.right = remove(root.right, student);
+            } else if (root.student.compareTo(student) > 0) {
+                root.left = remove(root.left, student);
             } else {
                 if (root.left == null && root.right == null) {
                     root = null;
@@ -91,9 +73,9 @@ public class BinarySearchTree {
                 } else if (root.left == null && root.right != null) {
                     root = root.right;
                 } else {
-                    int min = getMin(root.right);
+                    Student min = getMin(root.right);
                     remove(min);
-                    root.data = min;
+                    root.student = min;
                 }
             }
 
@@ -101,17 +83,17 @@ public class BinarySearchTree {
         return root;
     }
 
-    private class IntTreeNode {
-        public int data;
-        public IntTreeNode left;
-        public IntTreeNode right;
+    private class TreeNode {
+        public Student student;
+        public TreeNode left;
+        public TreeNode right;
 
-        public IntTreeNode(int data) {
-            this(data, null, null);
+        public TreeNode(Student student) {
+            this(student, null, null);
         }
 
-        public IntTreeNode(int data, IntTreeNode left, IntTreeNode right) {
-            this.data = data;
+        public TreeNode(Student student, TreeNode left, TreeNode right) {
+            this.student = student;
             this.left = left;
             this.right = right;
         }
