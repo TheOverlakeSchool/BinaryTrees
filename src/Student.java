@@ -3,7 +3,7 @@ import java.util.Comparator;
 public class Student implements Comparable<Student> {
     private String name;
     private int grade;
-    public static final Comparator<Student> CASE_INSENSITIVE_ORDER = new CaseInsensitiveComparator();
+    public static final Comparator<Student> AGE_ORDER = new AgeComparator();
 
     public Student(String name, int grade, int age) {
         this.name = name;
@@ -45,11 +45,11 @@ public class Student implements Comparable<Student> {
         return name;
     }
 
-    public static class CaseInsensitiveComparator implements Comparator<Student> {
+    private static class AgeComparator implements Comparator<Student> {
 
         @Override
         public int compare(Student o1, Student o2) {
-            return o1.name.compareToIgnoreCase(o2.name);
+            return o1.age - o2.age;
         }
     }
 }

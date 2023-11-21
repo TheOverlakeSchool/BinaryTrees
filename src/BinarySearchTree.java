@@ -1,9 +1,19 @@
+import java.util.Comparator;
 import java.util.NoSuchElementException;
 import java.util.StringJoiner;
 
-public class BinarySearchTree {
+public class BinarySearchTree<T extends Comparable<T>> {
 
-    private TreeNode overallRoot;
+    private TreeNode<T> overallRoot;
+    private Comparator<T> comparator;
+
+    public BinarySearchTree(Comparator<T> comparator) {
+        this.comparator = comparator;
+    }
+
+    public BinarySearchTree() {
+        this(null);
+    }
 
     public String toString() {
         StringJoiner sj = new StringJoiner(", ", "[", "]");
@@ -11,60 +21,64 @@ public class BinarySearchTree {
         return sj.toString();
     }
 
-    private void print(TreeNode root, StringJoiner sj) {
+    private void print(TreeNode<T> root, StringJoiner sj) {
         if (root != null) {
             print(root.left, sj);
-            sj.add(root.student.toString());
+            sj.add(root.value.toString());
             print(root.right, sj);
         }
     }
 
-    public boolean contains(Student student) {
-        return contains(overallRoot, student);
+    public boolean contains(T value) {
+        return contains(overallRoot, value);
     }
 
-    private boolean contains(TreeNode root, Student student) {
-        return root != null && (root.student.equals(student) || (root.student.compareTo(student) > 0 ? contains(root.left, student) : contains(root.right, student)));
+    private boolean contains(TreeNode<T> root, T value) {
+        return root != null && (root.value.equals(value) || (compare(root, value) > 0 ? contains(root.left, value) : contains(root.right, value)));
     }
 
-    public void add(Student student) {
-        overallRoot = add(overallRoot, student);
+    private int compare(TreeNode<T> root, T value) {
+        return comparator == null ? root.value.compareTo(value) : comparator.compare(root.value, value);
     }
 
-    private TreeNode add(TreeNode root, Student student) {
+    public void add(T value) {
+        overallRoot = add(overallRoot, value);
+    }
+
+    private TreeNode<T> add(TreeNode<T> root, T value) {
         if (root == null) {
-            root = new TreeNode(student);
+            root = new TreeNode<T>(value);
         } else {
-            if (root.student.compareTo(student) > 0) {
-                root.left = add(root.left, student);
-            } else if(root.student.compareTo(student) < 0) {
-                root.right = add(root.right, student);
+            if (compare(root, value) > 0) {
+                root.left = add(root.left, value);
+            } else if(compare(root, value) < 0) {
+                root.right = add(root.right, value);
             }
         }
         return root;
     }
 
-    public Student getMin() {
+    public T getMin() {
         if (overallRoot == null) {
             throw new NoSuchElementException();
         }
         return getMin(overallRoot);
     }
 
-    private Student getMin(TreeNode root) {
-        return root.left == null ? root.student : getMin(root.left);
+    private T getMin(TreeNode<T> root) {
+        return root.left == null ? root.value : getMin(root.left);
     }
 
-    public void remove(Student student) {
-        overallRoot = remove(overallRoot, student);
+    public void remove(T value) {
+        overallRoot = remove(overallRoot, value);
     }
 
-    private TreeNode remove(TreeNode root, Student student) {
+    private TreeNode<T> remove(TreeNode<T> root, T value) {
         if (root != null) {
-            if (root.student.compareTo(student) < 0) {
-                root.right = remove(root.right, student);
-            } else if (root.student.compareTo(student) > 0) {
-                root.left = remove(root.left, student);
+            if (compare(root, value) < 0) {
+                root.right = remove(root.right, value);
+            } else if (compare(root, value) > 0) {
+                root.left = remove(root.left, value);
             } else {
                 if (root.left == null && root.right == null) {
                     root = null;
@@ -73,9 +87,9 @@ public class BinarySearchTree {
                 } else if (root.left == null && root.right != null) {
                     root = root.right;
                 } else {
-                    Student min = getMin(root.right);
+                    T min = getMin(root.right);
                     remove(min);
-                    root.student = min;
+                    root.value = min;
                 }
             }
 
@@ -83,17 +97,17 @@ public class BinarySearchTree {
         return root;
     }
 
-    private class TreeNode {
-        public Student student;
-        public TreeNode left;
-        public TreeNode right;
+    private class TreeNode<T> {
+        public T value;
+        public TreeNode<T> left;
+        public TreeNode<T> right;
 
-        public TreeNode(Student student) {
-            this(student, null, null);
+        public TreeNode(T value) {
+            this(value, null, null);
         }
 
-        public TreeNode(Student student, TreeNode left, TreeNode right) {
-            this.student = student;
+        public TreeNode(T value, TreeNode<T> left, TreeNode<T> right) {
+            this.value = value;
             this.left = left;
             this.right = right;
         }
